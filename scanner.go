@@ -23,15 +23,15 @@ import (
 
 // Scanner structure of the device scanner.
 type Scanner struct {
-	devicesPath  string
-	udevDataPath string
+	DevicesPath  string
+	UdevDataPath string
 }
 
 // NewScanner creates a new instance of device scanner.
 func NewScanner() *Scanner {
 	return &Scanner{
-		devicesPath:  "/sys/devices",
-		udevDataPath: "/run/udev/data",
+		DevicesPath:  "/sys/devices",
+		UdevDataPath: "/run/udev/data",
 	}
 }
 
@@ -39,7 +39,7 @@ func NewScanner() *Scanner {
 func (s *Scanner) ScanDevices() (err error, devices []*types.Device) {
 	devices = []*types.Device{}
 	devicesMap := map[string]*types.Device{}
-	err = filepath.Walk(s.devicesPath, func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(s.DevicesPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
 		}
@@ -73,7 +73,7 @@ func (s *Scanner) ScanDevices() (err error, devices []*types.Device) {
 		devpath := v.Devpath
 		for i := len(parts) - 1; i >= 0; i-- {
 			devpath = strings.TrimSuffix(devpath, "/"+parts[i])
-			if devpath == s.devicesPath {
+			if devpath == s.DevicesPath {
 				break
 			}
 
@@ -166,7 +166,7 @@ func (s *Scanner) readDevFile(path string) (data string, err error) {
 }
 
 func (s *Scanner) readUdevInfo(devString string, d *types.Device) error {
-	path := fmt.Sprintf("%s/c%s", s.udevDataPath, devString)
+	path := fmt.Sprintf("%s/c%s", s.UdevDataPath, devString)
 	f, err := os.Open(path)
 	if err != nil {
 		return err
